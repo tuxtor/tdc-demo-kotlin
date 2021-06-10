@@ -10,11 +10,14 @@ import kotlin.system.exitProcess
  * Hello world!
  *
  */
-@CommandLine.Command(name = "App", mixinStandardHelpOptions = true, version = ["app 0.0"],
+@CommandLine.Command(name = "App TDC 2021",
+    mixinStandardHelpOptions = true,
+    version = ["app 0.0.1"],
     description = ["Prints a list of hello phrases from a given file"])
 class App: Callable<Int> {
 
-    @CommandLine.Parameters(index = "0", description = ["File to iterate over greetings"])
+    @CommandLine.Parameters(index = "0",
+        description = ["File to iterate over greetings"])
     lateinit var file: File
 
     override fun call(): Int {
