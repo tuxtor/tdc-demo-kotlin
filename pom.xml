@@ -31,6 +31,12 @@
           <version>4.6.1</version>
       </dependency>
       <dependency>
+          <groupId>org.graalvm.sdk</groupId>
+          <artifactId>graal-sdk</artifactId>
+          <version>${graalvm.version}</version>
+          <scope>provided</scope>
+      </dependency>
+      <dependency>
           <groupId>org.jetbrains.kotlin</groupId>
           <artifactId>kotlin-test-junit</artifactId>
           <version>${kotlin.version}</version>
@@ -112,6 +118,26 @@
                           <mainClass>com.nabenik.tdc.App</mainClass>
                       </manifest>
                   </archive>
+              </configuration>
+          </plugin>
+          <plugin>
+              <groupId>org.graalvm.nativeimage</groupId>
+              <artifactId>native-image-maven-plugin</artifactId>
+              <version>${graalvm.version}</version>
+              <executions>
+                  <execution>
+                      <goals>
+                          <goal>native-image</goal>
+                      </goals>
+                      <phase>verify</phase>
+                  </execution>
+              </executions>
+              <configuration>
+                  <skip>false</skip>
+                  <imageName>app-${project.version}</imageName>
+                  <buildArgs>
+                      --no-fallback
+                  </buildArgs>
               </configuration>
           </plugin>
       </plugins>
