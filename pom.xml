@@ -14,62 +14,108 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>1.7</maven.compiler.source>
-    <maven.compiler.target>1.7</maven.compiler.target>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
+    <kotlin.version>1.5.0</kotlin.version>
+    <kotlin.code.style>official</kotlin.code.style>
+    <graalvm.version>21.1.0</graalvm.version>
   </properties>
 
   <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.11</version>
-      <scope>test</scope>
-    </dependency>
+      <dependency>
+          <groupId>org.jetbrains.kotlin</groupId>
+          <artifactId>kotlin-stdlib</artifactId>
+          <version>${kotlin.version}</version>
+      </dependency>
+      <dependency>
+          <groupId>info.picocli</groupId>
+          <artifactId>picocli</artifactId>
+          <version>4.6.1</version>
+      </dependency>
+      <dependency>
+          <groupId>org.jetbrains.kotlin</groupId>
+          <artifactId>kotlin-test-junit</artifactId>
+          <version>${kotlin.version}</version>
+          <scope>test</scope>
+      </dependency>
   </dependencies>
 
   <build>
-    <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
+      <sourceDirectory>src/main/kotlin</sourceDirectory>
+      <testSourceDirectory>src/test/kotlin</testSourceDirectory>
       <plugins>
-        <!-- clean lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#clean_Lifecycle -->
-        <plugin>
-          <artifactId>maven-clean-plugin</artifactId>
-          <version>3.1.0</version>
-        </plugin>
-        <!-- default lifecycle, jar packaging: see https://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_jar_packaging -->
-        <plugin>
-          <artifactId>maven-resources-plugin</artifactId>
-          <version>3.0.2</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.8.0</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.22.1</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-jar-plugin</artifactId>
-          <version>3.0.2</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-install-plugin</artifactId>
-          <version>2.5.2</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-deploy-plugin</artifactId>
-          <version>2.8.2</version>
-        </plugin>
-        <!-- site lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#site_Lifecycle -->
-        <plugin>
-          <artifactId>maven-site-plugin</artifactId>
-          <version>3.7.1</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-project-info-reports-plugin</artifactId>
-          <version>3.0.0</version>
-        </plugin>
+          <plugin>
+              <groupId>org.jetbrains.kotlin</groupId>
+              <artifactId>kotlin-maven-plugin</artifactId>
+              <version>${kotlin.version}</version>
+              <executions>
+                  <execution>
+                      <id>compile</id>
+                      <phase>compile</phase>
+                      <goals>
+                          <goal>compile</goal>
+                      </goals>
+                  </execution>
+                  <execution>
+                      <id>test-compile</id>
+                      <phase>test-compile</phase>
+                      <goals>
+                          <goal>test-compile</goal>
+                      </goals>
+                  </execution>
+                  <execution>
+                      <id>kapt</id>
+                      <goals>
+                          <goal>kapt</goal>
+                      </goals>
+                      <configuration>
+                          <sourceDirs>
+                              <sourceDir>src/main/kotlin</sourceDir>
+                          </sourceDirs>
+                          <annotationProcessorPaths>
+                              <path>
+                                  <groupId>info.picocli</groupId>
+                                  <artifactId>picocli-codegen</artifactId>
+                                  <version>4.6.1</version>
+                              </path>
+                          </annotationProcessorPaths>
+                      </configuration>
+                  </execution>
+              </executions>
+          </plugin>
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-dependency-plugin</artifactId>
+              <executions>
+                  <execution>
+                      <id>copy-dependencies</id>
+                      <phase>prepare-package</phase>
+                      <goals>
+                          <goal>copy-dependencies</goal>
+                      </goals>
+                      <configuration>
+                          <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                          <overWriteReleases>false</overWriteReleases>
+                          <overWriteSnapshots>false</overWriteSnapshots>
+                          <overWriteIfNewer>true</overWriteIfNewer>
+                      </configuration>
+                  </execution>
+              </executions>
+          </plugin>
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-jar-plugin</artifactId>
+              <version>2.4</version>
+              <configuration>
+                  <archive>
+                      <manifest>
+                          <addClasspath>true</addClasspath>
+                          <classpathPrefix>lib/</classpathPrefix>
+                          <mainClass>com.nabenik.tdc.App</mainClass>
+                      </manifest>
+                  </archive>
+              </configuration>
+          </plugin>
       </plugins>
-    </pluginManagement>
   </build>
 </project>
